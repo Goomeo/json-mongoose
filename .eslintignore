@@ -1,0 +1,13 @@
+# Placer ce fichier à la racine du projet et le renommer .eslintignore
+
+# ignore le path de build de Backbone.js
+dist/
+
+# ignore les modules node
+node_modules
+
+# ignore les librairies externes de bower
+js/libs/vendors/
+
+# ignore les librairies externes collées dans le projet
+js/libs/external
