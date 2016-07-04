@@ -49,7 +49,9 @@ module.exports = jsonToMongoose({
     mongoose    : mongoose,
     collection  : 'user',
     schema      : require('../schemas/user'),
-    pkAutoInc   : true,
+    autoinc     : {
+        field : '_id'
+    },
     pre         : {
         save : (doc, next) => {
             async.parallel({
@@ -102,3 +104,7 @@ The function get only one parameter with may options :
 | statics | object | false | Define all statics functions for your model |
 | index | object[] | false | Define model indexes |
 | transform | function | false | Define the default transform method for your model |
+| autoinc | Object | false | Autoincrement config for this Model |
+| autoinc.field | String | false | Field with the autoinc |
+| autoinc.startAt | Number | false | Start value for the auto inc. Default : 0 |
+| autoinc.incrementBy | Number | false | Auto Inc steps. Default : 1 |

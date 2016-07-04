@@ -22,6 +22,10 @@ const joigoose          = require('joigoose');
  * @param {object}          [json.statics]                  Méthodes statiques des modèles mongoose
  * @param {object[]}        [json.index]                    Tableau des index mongoDB
  * @param {function}        [json.transform]                Méthode de transformation par défaut lors de l'appel de `toObject()`
+ * @param {object}          [json.autoinc]                  Autoincrement config for this Model
+ * @param {string}          [json.autoinc.field]            Model field with the autoinc column. Default : `_id`
+ * @param {number}          [json.autoinc.startAt]          Start value for the autoinc field. Default: 0
+ * @param {number}          [json.autoinc.incrementBy]      The increment count for each new element
  */
 module.exports = json => {
     if (_.isEmpty(json.schema)) {
@@ -31,12 +35,9 @@ module.exports = json => {
         throw new Error('Collection name is required');
     }
 
-    let conn                = json.mongoose;
-    let customConnection    = false;
+    let conn                = json.mongoose.connection;
 
     if (json.connection) {
-        customConnection = true;
-
         if (_.isString(json.connection)) {
             conn = json.mongoose.createConnection(json.connection);
         } else {
@@ -54,14 +55,15 @@ module.exports = json => {
 
     const schema = new json.mongoose.Schema(json.schema);
 
-    if (json.pkAutoInc === true) {
-        if (customConnection === true) {
-            autoIncrement.initialize(conn);
-        } else {
-            autoIncrement.initialize(json.mongoose.connection);
-        }
+    if (json.autoinc) {
+        let autoincPlugin = autoIncrement(conn),
+            options = _.extend({
+                model       : json.collection,
+                startAt     : 1,
+                incrementBy : 1
+            }, json.autoinc);
 
-        schema.plugin(autoIncrement.plugin, json.collection);
+        schema.plugin(autoincPlugin, options);
     }
 
     if (_.isFunction(json.transform) && !schema.options.toObject) {
