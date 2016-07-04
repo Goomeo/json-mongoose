@@ -8,19 +8,20 @@ const joigoose          = require('joigoose');
 /**
  * JSON d'entrée pour la génération en modèle mongoose
  *
- * @param {object}      json                            JSON d'entrée
- * @param {object}      json.mongoose                   Instance de mongoose ou autre connexion mongoose
- * @param {object}      json.schema                     schema JOI ou JSON utilisé pour créer le schema mongoose
- * @param {string}      json.collection                 Nom de la collection
- * @param {function}    [json.schemaUpdate]             Permet de modifier le schéma généré depuis Joi (pour rajouter les unique pae exemple
- * @param {object}      [json.virtual]                  Définition des champs virtuels
- * @param {object}      [json.options]                  Options du schéma Mongoose
- * @param {object}      [json.pre]                      Définition des différent préprocess possibles sur le middleware mongoose
- * @param {object}      [json.post]                     Définition des différent postprocess possibles sur le middleware mongoose
- * @param {object}      [json.methods]                  Méthodes des instances des modèles mongoose
- * @param {object}      [json.statics]                  Méthodes statiques des modèles mongoose
- * @param {object[]}    [json.index]                    Tableau des index mongoDB
- * @param {function}    [json.transform]                Méthode de transformation par défaut lors de l'appel de `toObject()`
+ * @param {object}          json                            JSON d'entrée
+ * @param {object}          json.mongoose                   Instance de mongoose ou autre connexion mongoose
+ * @param {object}          json.schema                     schema JOI ou JSON utilisé pour créer le schema mongoose
+ * @param {string}          json.collection                 Nom de la collection
+ * @param {string|object}   [json.connection]               Mongoose connection created with `mongoose.createConnection()` or juste the string for the new connection
+ * @param {function}        [json.schemaUpdate]             Permet de modifier le schéma généré depuis Joi (pour rajouter les unique pae exemple
+ * @param {object}          [json.virtual]                  Définition des champs virtuels
+ * @param {object}          [json.options]                  Options du schéma Mongoose
+ * @param {object}          [json.pre]                      Définition des différent préprocess possibles sur le middleware mongoose
+ * @param {object}          [json.post]                     Définition des différent postprocess possibles sur le middleware mongoose
+ * @param {object}          [json.methods]                  Méthodes des instances des modèles mongoose
+ * @param {object}          [json.statics]                  Méthodes statiques des modèles mongoose
+ * @param {object[]}        [json.index]                    Tableau des index mongoDB
+ * @param {function}        [json.transform]                Méthode de transformation par défaut lors de l'appel de `toObject()`
  */
 module.exports = json => {
     if (_.isEmpty(json.schema)) {
@@ -71,7 +72,17 @@ module.exports = json => {
         schema.index(index);
     });
 
-    let Model = json.mongoose.model(json.collection, schema);
+    let conn = json.mongoose;
+
+    if (json.connection) {
+        if (_.isString(json.connection)) {
+            conn = json.mongoose.createConnection(json.connection);
+        } else {
+            conn = json.connection;
+        }
+    }
+
+    let Model = conn.model(json.collection, schema);
 
     return Promise.promisifyAll(Model);
 };

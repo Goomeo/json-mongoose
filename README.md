@@ -89,9 +89,10 @@ The function get only one parameter with may options :
 
 | Option | Type | Required | Description |
 | ----  | ---- | ----       | ---- |
-| mongoose | Object | **true** | Mongoose instance or new mongoose connection (via `mongoose.createConnection()`) |
+| mongoose | Object | **true** | Mongoose instance |
 | schema | Object | **true** | Joi schema or JSON schema. If you use JOI schema, you should be used the `schemaUpdate` Method to set the unique fields or other params |
 | collection | string | **true** | Collection name |
+| connection | String or Object | false | Mongoose connection created with `mongoose.createConnection()` or juste the string for the new connection |
 | schemaUpdate | function | false | This function is used if your schema is a JOI schema. In this case, you can set specifics fields unique, ... |
 | virtual | object | false |define model virtual fields |
 | options | object | false | Mongoose schema options |
