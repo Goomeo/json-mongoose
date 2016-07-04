@@ -1,6 +1,6 @@
 {
   "name": "json-mongoose",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Mongoose model representation like waterline models",
   "main": "index.js",
   "scripts": {
@@ -28,7 +28,6 @@
     "joigoose": "^1.5.6",
     "mongoose": "^4.5.3",
     "mongoose-auto-increment": "git+https://github.com/Goomeo/mongoose-auto-increment.git",
-    "mongoose-naxmefy-autoinc-field": "^0.1.1",
     "underscore": "^1.8.3"
   }
 }
