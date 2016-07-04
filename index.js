@@ -31,6 +31,19 @@ module.exports = json => {
         throw new Error('Collection name is required');
     }
 
+    let conn                = json.mongoose;
+    let customConnection    = false;
+
+    if (json.connection) {
+        customConnection = true;
+
+        if (_.isString(json.connection)) {
+            conn = json.mongoose.createConnection(json.connection);
+        } else {
+            conn = json.connection;
+        }
+    }
+
     if (json.schema.isJoi === true) {
         json.schema = joigoose(json.mongoose).convert(json.schema);
 
@@ -42,7 +55,12 @@ module.exports = json => {
     const schema = new json.mongoose.Schema(json.schema);
 
     if (json.pkAutoInc === true) {
-        autoIncrement.initialize(json.mongoose.connection);
+        if (customConnection === true) {
+            autoIncrement.initialize(conn);
+        } else {
+            autoIncrement.initialize(json.mongoose.connection);
+        }
+
         schema.plugin(autoIncrement.plugin, json.collection);
     }
 
@@ -71,16 +89,6 @@ module.exports = json => {
     _.each(json.index, index => {
         schema.index(index);
     });
-
-    let conn = json.mongoose;
-
-    if (json.connection) {
-        if (_.isString(json.connection)) {
-            conn = json.mongoose.createConnection(json.connection);
-        } else {
-            conn = json.connection;
-        }
-    }
 
     let Model = conn.model(json.collection, schema);
 
