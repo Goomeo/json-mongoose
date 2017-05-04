@@ -102,7 +102,7 @@ The function get only one parameter with may options :
 | post | object | false | Define different preprocess functions in the middleware for your model |
 | methods | object | false | Define all instance functions for your model |
 | statics | object | false | Define all statics functions for your model |
-| index | object[] | false | Define model indexes |
+| index | object[]/Array[] | false | Define model indexes. Use an array to pass index options. |
 | transform | function | false | Define the default transform method for your model |
 | autoinc | Object | false | Autoincrement config for this Model |
 | autoinc.field | String | false | Field with the autoinc |
